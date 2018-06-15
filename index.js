@@ -6,10 +6,10 @@
 // Create STORE array here
 
 const STORE = [
-  {name: "apples", checked: false},
-  {name: "oranges", checked: false},
-  {name: "milk", checked: true},
-  {name: "bread", checked: false}
+      {name: "apples", checked: false},
+      {name: "oranges", checked: false},
+      {name: "milk", checked: true},
+      {name: "bread", checked: false}
 ];
 
 // function to create a new <li> element
@@ -48,8 +48,13 @@ function generateShoppingItemsString(shoppingList) {
 function renderShoppingList() {
   // render the shopping list in the DOM
   console.log('`renderShoppingList` ran');
-  const shoppingListItemsString = generateShoppingItemsString(STORE);
-
+  let shoppingListItemsString;
+  if (checkIt) {
+   const filteredList = filterItems();
+   shoppingListItemsString = generateShoppingItemsString(filteredList);
+  } else {
+    shoppingListItemsString = generateShoppingItemsString(STORE);
+  }
   // insert that HTML into the DOM
   $('.js-shopping-list').html(shoppingListItemsString);
 }
@@ -108,7 +113,49 @@ function handleDeleteItemClicked() {
       STORE.splice(idx, 1);
       renderShoppingList();
     });
-  }
+}
+
+// HTML for toggle button
+
+function toggleButtonHTML() {
+    return `<form id="check-toggle-button" class="check-toggle">
+    <label for="toggle-check">Show only <i>checked</i> items: </label>
+    <button type="submit">Toggle</button>
+</form>`
+}
+
+// render the toggleButton
+
+function renderToggleButton() {
+    $('#checked-toggle-button').html(toggleButtonHTML());
+}
+
+// hide checked items in the array
+
+function filterItems() {
+
+    const filteredList = STORE.filter(item => item.checked === false);
+    console.log(filteredList);    
+    return filteredList;
+};
+
+// click the button to toggle between checked & unchecked
+
+let checkIt = false;
+
+function checkToggleButton () {
+    $('#check-toggle-button').submit(function(event) {
+        checkIt = !checkIt;
+        // prevent the page from refreshing
+        event.preventDefault();
+        console.log("Checked items have been toggled.");
+        // run the filter function -> change the store
+        //render the shopping list;
+        renderShoppingList();
+    });
+}
+
+
 
 // this function will be our callback when the page loads. it's responsible for
 // initially rendering the shopping list, and activating our individual functions
@@ -119,6 +166,8 @@ function handleShoppingList() {
   handleNewItemSubmit();
   handleItemCheckClicked();
   handleDeleteItemClicked();
+  renderToggleButton();
+  checkToggleButton();
 }
 
 // when the page loads, call `handleShoppingList`
