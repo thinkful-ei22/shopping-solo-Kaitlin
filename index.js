@@ -220,6 +220,7 @@ function handleSearchItems() {
         console.log(itemsAreFiltered);
 
         renderShoppingList();
+        hasBeenClicked = false;
     }); 
 };
 
