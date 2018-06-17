@@ -59,9 +59,10 @@ function renderShoppingList() {
   if (checkIt) {
    const filteredList = filterItems();
    shoppingListItemsString = generateShoppingItemsString(filteredList);
-  } else if (itemIsSearched) {
-  const itemsFilter = searchFilter();
-   shoppingListItemsString = generateShoppingItemsString(itemsFilter);
+  } 
+  else if (filterItCheck) {
+    console.log('We made it to the top');
+    shoppingListItemsString = generateShoppingItemsString(filterIt);
   } 
   else {
     shoppingListItemsString = generateShoppingItemsString(STORE);
@@ -195,23 +196,26 @@ function handleEditItemSubmit(itemIndex) {
 // https://devdojo.com/blog/tutorials/jquery-easy-editable-text-fields
 
 // Search and filter list by item name containing the search term
-let itemIsSearched = false;
 
-function searchFilter () {
 
-    let itemsFilter = STORE.filter(index => index.name.includes(searchValue));
-        console.log(itemsFilter);    
-        return itemsFilter;
-};
+let filterItCheck = false;
+let filterIt = [];
 
 function handleSearchItems() {
     $('#js-search-list-form').submit(function(event) {
-        itemIsSearched = true;
-        console.log('Search Button Working!');
         event.preventDefault();
+        console.log('Search Button Working!');
+
         // get search value
         let searchValue = $('.js-search-list-entry').val();
-        // console.log(searchValue);
+        console.log(searchValue);
+
+        // filter the list
+        const itemsFilter = STORE.filter(index => index.name.includes(searchValue));
+        filterIt = itemsFilter;
+        console.log(filterIt);
+
+        filterItCheck = true;
 
     }); renderShoppingList();
 };
