@@ -26,11 +26,11 @@ function generateItemElement(item, itemIndex, template) {
         <button class="shopping-item-toggle js-item-toggle">
             <span class="button-label">check</span>
         </button>
-        <button class="shopping-item-edit js-edit-item">
-        <span class="button-label">edit</span>
-        </button>
         <button class="shopping-item-delete js-item-delete">
             <span class="button-label">delete</span>
+        </button>
+        <button class="shopping-item-edit js-edit-item">
+        <span class="button-label">edit item</span>
         </button>
       </div>
     </li>`;
@@ -60,9 +60,9 @@ function renderShoppingList() {
    const filteredList = filterItems();
    shoppingListItemsString = generateShoppingItemsString(filteredList);
   } 
-  else if (filterItCheck) {
+  else if (hasBeenClicked) {
     console.log('We made it to the top');
-    shoppingListItemsString = generateShoppingItemsString(filterIt);
+    shoppingListItemsString = generateShoppingItemsString(itemsAreFiltered);
   } 
   else {
     shoppingListItemsString = generateShoppingItemsString(STORE);
@@ -195,11 +195,16 @@ function handleEditItemSubmit(itemIndex) {
 // I wanted to use this method but I couldn't figure out how to implement it!
 // https://devdojo.com/blog/tutorials/jquery-easy-editable-text-fields
 
+
+
 // Search and filter list by item name containing the search term
 
+let hasBeenClicked = false;
+$('#js-search-list-form').click(function () {
+    hasBeenClicked = true;
+});
 
-let filterItCheck = false;
-let filterIt = [];
+let itemsAreFiltered = [];
 
 function handleSearchItems() {
     $('#js-search-list-form').submit(function(event) {
@@ -208,17 +213,16 @@ function handleSearchItems() {
 
         // get search value
         let searchValue = $('.js-search-list-entry').val();
-        console.log(searchValue);
+        // console.log(searchValue);
 
         // filter the list
-        const itemsFilter = STORE.filter(index => index.name.includes(searchValue));
-        filterIt = itemsFilter;
-        console.log(filterIt);
+        itemsAreFiltered = STORE.filter(index => index.name.includes(searchValue));
+        console.log(itemsAreFiltered);
 
-        filterItCheck = true;
-
-    }); renderShoppingList();
+        renderShoppingList();
+    }); 
 };
+
 
 // this function will be our callback when the page loads. it's responsible for
 // initially rendering the shopping list, and activating our individual functions
