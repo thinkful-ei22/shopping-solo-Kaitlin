@@ -17,10 +17,17 @@ const STORE = [
 function generateItemElement(item, itemIndex, template) {
   return `
     <li class="js-item-index-element" data-item-index="${itemIndex}">
-      <span class="shopping-item js-shopping-item ${item.checked ? "shopping-item__checked" : ''}">${item.name}</span>
+      <span class="shopping-item js-shopping-item ${item.checked ? "shopping-item__checked" : ''}">${item.name.toLowerCase()}</span>
+      <input type="text"" name="edit-item-name" class="edit-item-box" placeholder="edit item name!">
+      <button clas="edit-item-name" hidden>
+        <span class="button-label">submit</span>
+      </button> 
       <div class="shopping-item-controls">
         <button class="shopping-item-toggle js-item-toggle">
             <span class="button-label">check</span>
+        </button>
+        <button class="shopping-item-edit js-edit-item">
+        <span class="button-label">edit</span>
         </button>
         <button class="shopping-item-delete js-item-delete">
             <span class="button-label">delete</span>
@@ -52,7 +59,11 @@ function renderShoppingList() {
   if (checkIt) {
    const filteredList = filterItems();
    shoppingListItemsString = generateShoppingItemsString(filteredList);
-  } else {
+  } else if (itemIsSearched) {
+  const itemsFilter = searchFilter();
+   shoppingListItemsString = generateShoppingItemsString(itemsFilter);
+  } 
+  else {
     shoppingListItemsString = generateShoppingItemsString(STORE);
   }
   // insert that HTML into the DOM
@@ -119,7 +130,7 @@ function handleDeleteItemClicked() {
 
 function toggleButtonHTML() {
     return `<form id="check-toggle-button" class="check-toggle">
-    <label for="toggle-check">Show only <i>checked</i> items: </label>
+    <label for="toggle-check">Show only <i>unchecked</i> items: </label>
     <button type="submit">Toggle</button>
 </form>`
 }
@@ -155,7 +166,55 @@ function checkToggleButton () {
     });
 }
 
+// function for editing an item name in the current list
 
+function handleEditItemName() {
+    // listen for click button
+    $('.js-shopping-list').on('click', '.shopping-item-edit', function() {
+        console.log('Edit Item works!');
+        // Create an area for the item to be edited
+        $(event.currentTarget).closest('li').find('.edit-item-box').show();
+        $(event.currentTarget).closest('li').find('.edit-item-name').show();
+    });
+}
+
+function handleEditItemSubmit(itemIndex) {
+    $('.js-shopping-list').on('click', '.js-edit-item', function(event) {
+        const editedName = $('.edit-item-box').val();
+        console.log(editedName);
+        const itemIndex = getItemIndexFromElement(event.currentTarget);
+
+        if(editedName !== '') {
+            STORE[itemIndex].name = editedName;
+        };
+        renderShoppingList();
+    })
+}
+
+// I wanted to use this method but I couldn't figure out how to implement it!
+// https://devdojo.com/blog/tutorials/jquery-easy-editable-text-fields
+
+// Search and filter list by item name containing the search term
+let itemIsSearched = false;
+
+function searchFilter () {
+
+    let itemsFilter = STORE.filter(index => index.name.includes(searchValue));
+        console.log(itemsFilter);    
+        return itemsFilter;
+};
+
+function handleSearchItems() {
+    $('#js-search-list-form').submit(function(event) {
+        itemIsSearched = true;
+        console.log('Search Button Working!');
+        event.preventDefault();
+        // get search value
+        let searchValue = $('.js-search-list-entry').val();
+        // console.log(searchValue);
+
+    }); renderShoppingList();
+};
 
 // this function will be our callback when the page loads. it's responsible for
 // initially rendering the shopping list, and activating our individual functions
@@ -168,6 +227,9 @@ function handleShoppingList() {
   handleDeleteItemClicked();
   renderToggleButton();
   checkToggleButton();
+  handleEditItemName();
+  handleEditItemSubmit();
+  handleSearchItems();
 }
 
 // when the page loads, call `handleShoppingList`
