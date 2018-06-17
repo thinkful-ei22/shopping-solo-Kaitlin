@@ -59,10 +59,11 @@ function renderShoppingList() {
   if (checkIt) {
    const filteredList = filterItems();
    shoppingListItemsString = generateShoppingItemsString(filteredList);
-  } else if (itemIsSearched) {
-  const itemsFilter = searchFilter();
-   shoppingListItemsString = generateShoppingItemsString(itemsFilter);
   } 
+//   else if (itemIsSearched) {
+//   const itemsFilter = searchFilter();
+//    shoppingListItemsString = generateShoppingItemsString(itemsFilter);
+//   } 
   else {
     shoppingListItemsString = generateShoppingItemsString(STORE);
   }
@@ -195,25 +196,31 @@ function handleEditItemSubmit(itemIndex) {
 // https://devdojo.com/blog/tutorials/jquery-easy-editable-text-fields
 
 // Search and filter list by item name containing the search term
-let itemIsSearched = false;
+// let itemIsSearched = false;
 
-function searchFilter () {
+// function searchFilter () {
 
-    let itemsFilter = STORE.filter(index => index.name.includes(searchValue));
-        console.log(itemsFilter);    
-        return itemsFilter;
-};
+//     let itemsFilter = STORE.filter(index => index.name.includes(searchValue));
+//         console.log(itemsFilter);    
+//         return itemsFilter;
+// };
 
 function handleSearchItems() {
     $('#js-search-list-form').submit(function(event) {
-        itemIsSearched = true;
+        // itemIsSearched = true;
         console.log('Search Button Working!');
         event.preventDefault();
         // get search value
         let searchValue = $('.js-search-list-entry').val();
-        // console.log(searchValue);
+        console.log(searchValue);
 
-    }); renderShoppingList();
+        const itemsFilter = STORE.filter(index => index.name.includes(searchValue));
+
+        console.log(itemsFilter);    
+        // return itemsFilter;
+
+        renderShoppingList(itemsFilter);
+    });
 };
 
 // this function will be our callback when the page loads. it's responsible for
